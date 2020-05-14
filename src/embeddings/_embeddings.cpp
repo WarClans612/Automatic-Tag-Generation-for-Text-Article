@@ -15,7 +15,7 @@ public:
     ~Embeddings() = default;
 
     void load_embed_file(const std::string& fn);
-    //std::vector<double> & operator() (const std::string& word) const;
+    const std::vector<double> &operator[] (const std::string& word);
 
 private:
 
@@ -58,11 +58,12 @@ void Embeddings::load_embed_file(const std::string& fn)
             ifs >> vec[i];
         }
         embed[key] = vec;
+        if (j++ > 300) break;
     }
     ifs.close();
 }
 
-int main ()
+const std::vector<double> & Embeddings::operator[] (const std::string& word) 
 {
-    Embeddings something;
+    return embed[word];
 }
