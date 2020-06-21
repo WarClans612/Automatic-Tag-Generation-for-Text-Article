@@ -25,7 +25,7 @@ public:
     Datasets(const std::string& fn1, const std::string& fn2, const std::string& fn3);
     ~Datasets() = default;
 
-    void load_embedding();
+    torch::Tensor& get_embeddings();
     void load_embedding(const std::string& fn);
     void update_Example(std::vector<Example>& target);
     void update_datasets();
@@ -35,8 +35,10 @@ public:
     void load_test_file(const std::string& fn);
     void load_file(std::vector<Example>& target, const std::string& fn);
 
+    int get_train_len();
     void init_epoch();
     torch::Tensor get_batch(int batch_size);
+    torch::Tensor get_target(int batch_size);
 
 private:
 

@@ -42,10 +42,9 @@ Datasets::Datasets(const std::string& fn1, const std::string& fn2, const std::st
     load_test_file(test_file);
 }
 
-void Datasets::load_embedding()
+torch::Tensor& Datasets::get_embeddings()
 {
-    embed = Embeddings("../word2vec/GoogleNews-vectors-negative300.txt");
-    return;
+    return embed.get_embeddings();
 }
 
 void Datasets::load_embedding(const std::string& fn)
@@ -75,24 +74,28 @@ void Datasets::update_datasets()
     if (train_it.size() != 0) update_Example(train_it);
     if (dev_it.size() != 0) update_Example(dev_it);
     if (test_it.size() != 0) update_Example(test_it);
+    std::cout << "Datasets finished updating" << std::endl;
     return;
 }
 
 void Datasets::load_train_file(const std::string& fn)
 {
     load_file(train_it, fn);
+    std::cout << "Training Datasets finished loading" << std::endl;
     return;
 }
 
 void Datasets::load_dev_file(const std::string& fn)
 {
     load_file(dev_it, fn);
+    std::cout << "Evaluation Datasets finished loading" << std::endl;
     return;
 }
 
 void Datasets::load_test_file(const std::string& fn)
 {
     load_file(test_it, fn);
+    std::cout << "Testing Datasets finished loading" << std::endl;
     return;
 }
 
@@ -136,6 +139,11 @@ void Datasets::load_file(std::vector<Example>& target, const std::string& fn)
     return;
 }
 
+int Datasets::get_train_len()
+{
+    return train_it.size();
+}
+
 void Datasets::init_epoch()
 {
     current_batch_idx = 0;
@@ -162,6 +170,33 @@ torch::Tensor Datasets::get_batch(int batch_size)
     for(int i=current_batch_idx*batch_size+1; i < (current_batch_idx+1)*batch_size; ++i)
     {
         a = train_it[i].i_text;
+        a.resize(max_len, 0);
+        results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
+    }
+    current_batch_idx++;
+    return results;
+}
+
+torch::Tensor Datasets::get_target(int batch_size)
+{
+    // Get Max Length of the batch
+    int max_len = 0;
+    for(int i=current_batch_idx*batch_size; i < (current_batch_idx+1)*batch_size; ++i)
+    {
+        if (train_it[i].label.size() > max_len)
+        {
+            max_len = train_it[i].label.size();
+        }
+    }
+
+    // Concatenate sentence into one batch
+    auto a = train_it[current_batch_idx*batch_size].label;
+    a.resize(max_len, 0);
+    auto results = torch::tensor(a);
+    results = at::reshape(results, {1, -1});
+    for(int i=current_batch_idx*batch_size+1; i < (current_batch_idx+1)*batch_size; ++i)
+    {
+        a = train_it[i].label;
         a.resize(max_len, 0);
         results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
     }
