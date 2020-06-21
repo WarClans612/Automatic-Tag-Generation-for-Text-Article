@@ -1,3 +1,5 @@
+// Developer: Wilbert (wilbert.phen@gmail.com)
+
 #include <torch/torch.h>
 #include <ATen/ATen.h>
 #include <iostream>
@@ -6,8 +8,8 @@
 struct XMLCNN : torch::nn::Module {
     XMLCNN(){}
 
-    XMLCNN(torch::Tensor TEXT_FIELD) {
-        embed = register_module("embed", torch::nn::Embedding::from_pretrained(TEXT_FIELD));
+    XMLCNN(torch::Tensor text_vector) {
+        embed = register_module("embed", torch::nn::Embedding::from_pretrained(text_vector));
         conv1 = register_module("conv1", torch::nn::Conv2d(torch::nn::Conv2dOptions(1, 100, {2, 300}).stride(1).padding({1, 0})));
         conv2 = register_module("conv2", torch::nn::Conv2d(torch::nn::Conv2dOptions(1, 100, {4, 300}).stride(1).padding({3, 0})));
         conv3 = register_module("conv3", torch::nn::Conv2d(torch::nn::Conv2dOptions(1, 100, {8, 300}).stride(1).padding({7, 0})));
