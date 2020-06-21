@@ -12,7 +12,7 @@ public:
 
     std::vector<std::string> text;
     std::vector<int> i_text;
-    std::vector<double> label;
+    std::vector<float> label;
 };
 
 class Datasets {
@@ -27,6 +27,7 @@ public:
 
     void load_embedding();
     void load_embedding(const std::string& fn);
+    void update_Example(std::vector<Example>& target);
     void update_datasets();
 
     void load_train_file(const std::string& fn);
@@ -34,8 +35,12 @@ public:
     void load_test_file(const std::string& fn);
     void load_file(std::vector<Example>& target, const std::string& fn);
 
+    void init_epoch();
+    torch::Tensor get_batch(int batch_size);
+
 private:
 
+    int current_batch_idx=0;
     std::string train_file;
     std::string dev_file;
     std::string test_file;

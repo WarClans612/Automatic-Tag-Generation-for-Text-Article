@@ -40,7 +40,6 @@ Datasets::Datasets(const std::string& fn1, const std::string& fn2, const std::st
     load_train_file(train_file);
     load_dev_file(dev_file);
     load_test_file(test_file);
-    update_datasets();
 }
 
 void Datasets::load_embedding()
@@ -55,7 +54,29 @@ void Datasets::load_embedding(const std::string& fn)
     return;
 }
 
+void Datasets::update_Example(std::vector<Example>& target)
+{
+    for(auto& ex: target)
+    {
+        // Reserve size as much as text
+        ex.i_text.reserve(ex.text.size());
+        // Push converted string into integer
+        for(auto& word: ex.text)
+        {
+            ex.i_text.push_back(embed.stoi(word));
+        }
+    }
+}
 
+void Datasets::update_datasets()
+{
+    // This function is used to update the text into correct integer for embedding
+    // Check if the datasets iterator is not empty
+    if (train_it.size() != 0) update_Example(train_it);
+    if (dev_it.size() != 0) update_Example(dev_it);
+    if (test_it.size() != 0) update_Example(test_it);
+    return;
+}
 
 void Datasets::load_train_file(const std::string& fn)
 {
@@ -107,9 +128,43 @@ void Datasets::load_file(std::vector<Example>& target, const std::string& fn)
         {
             results.text.push_back(word);
         }
+        target.push_back(results);
     }
 
 
     ifs.close();
     return;
+}
+
+void Datasets::init_epoch()
+{
+    current_batch_idx = 0;
+    std::random_shuffle ( train_it.begin(), train_it.end() );
+}
+
+torch::Tensor Datasets::get_batch(int batch_size)
+{
+    // Get Max Length of the batch
+    int max_len = 0;
+    for(int i=current_batch_idx*batch_size; i < (current_batch_idx+1)*batch_size; ++i)
+    {
+        if (train_it[i].i_text.size() > max_len)
+        {
+            max_len = train_it[i].i_text.size();
+        }
+    }
+
+    // Concatenate sentence into one batch
+    auto a = train_it[current_batch_idx*batch_size].i_text;
+    a.resize(max_len, 0);
+    auto results = torch::tensor(a);
+    results = at::reshape(results, {1, -1});
+    for(int i=current_batch_idx*batch_size+1; i < (current_batch_idx+1)*batch_size; ++i)
+    {
+        a = train_it[i].i_text;
+        a.resize(max_len, 0);
+        results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
+    }
+    current_batch_idx++;
+    return results;
 }
