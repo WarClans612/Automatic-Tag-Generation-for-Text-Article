@@ -36,7 +36,7 @@ Tagger::Tagger(int output_channel, int epoch, int batch_size, float learning_rat
 void Tagger::train()
 {
     torch::optim::Adam optimizer(net->parameters(), this->learning_rate);
-    for(size_t epoch=1; epoch<=10; ++epoch) {
+    for(size_t epoch=1; epoch<=this->epoch; ++epoch) {
         std::cout << "Epoch " << epoch << std::endl;
         data_it.init_epoch();
         size_t batch_index=0;
