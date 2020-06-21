@@ -44,7 +44,6 @@ void Embeddings::load_embed_file(const std::string& fn)
         stoi_dict[key] = j;
         itos_dict[j] = key;
         j++;
-        if (j == 300) break;
     }
     ifs.close();
 }
