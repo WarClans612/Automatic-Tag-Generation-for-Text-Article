@@ -8,7 +8,7 @@
 struct XMLCNN : torch::nn::Module {
     XMLCNN(){}
 
-    XMLCNN(torch::Tensor text_vector) {
+    XMLCNN(output_class, torch::Tensor text_vector) {
         embed = register_module("embed", torch::nn::Embedding::from_pretrained(text_vector));
         conv1 = register_module("conv1", torch::nn::Conv2d(torch::nn::Conv2dOptions(1, 100, {2, 300}).stride(1).padding({1, 0})));
         conv2 = register_module("conv2", torch::nn::Conv2d(torch::nn::Conv2dOptions(1, 100, {4, 300}).stride(1).padding({3, 0})));
@@ -16,7 +16,7 @@ struct XMLCNN : torch::nn::Module {
 
         dropout = register_module("dropout", torch::nn::Dropout(torch::nn::DropoutOptions(0.5)));
         bottleneck = register_module("bottleneck", torch::nn::Linear(3*100*8, 512)); // ks*output_channel*dynamic_pool_length, num_bottleneck_hidden
-        fc1 = register_module("fc1", torch::nn::Linear(512, 90)); // num_bottleneck_hidden, target_class
+        fc1 = register_module("fc1", torch::nn::Linear(512, output_class)); // num_bottleneck_hidden, target_class
 
         pool = register_module("pool", torch::nn::AdaptiveMaxPool1d(8)); // dynamic_pool_length
     }
