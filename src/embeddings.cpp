@@ -61,7 +61,6 @@ void Embeddings::load_embed_file(const std::string& fn)
         }
 
         j++;
-        if (j==300)  break;
     }
 
     ifs.close();
