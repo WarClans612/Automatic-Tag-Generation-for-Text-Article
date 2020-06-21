@@ -9,7 +9,7 @@
 
 Embeddings::Embeddings()
 {
-    
+
 }
 
 Embeddings::Embeddings(const std::string& fn)
@@ -44,6 +44,7 @@ void Embeddings::load_embed_file(const std::string& fn)
         stoi_dict[key] = j;
         itos_dict[j] = key;
         j++;
+        if (j == 300) break;
     }
     ifs.close();
 }
@@ -55,11 +56,15 @@ const std::vector<double> & Embeddings::operator[] (const std::string& word)
 
 int Embeddings::stoi(const std::string& word)
 {
+    std::unordered_map<std::string, int>::const_iterator exists = stoi_dict.find(word);
+    if (exists == stoi_dict.end()) return 0;
     return stoi_dict[word];
 }
 
 const std::string Embeddings::itos(const int& value)
 {
+    std::unordered_map<int, std::string>::const_iterator exists = itos_dict.find(value);
+    if (exists == itos_dict.end()) return 0;
     return itos_dict[value];
 }
 
