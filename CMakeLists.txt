@@ -8,7 +8,7 @@ find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 include_directories(include)
-file(GLOB SOURCES "src/model/*.cpp" "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp")
 
 add_executable(_main ${SOURCES})
 target_link_libraries(_main "${TORCH_LIBRARIES}")
