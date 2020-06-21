@@ -10,12 +10,7 @@
 #include "datasets.h"
 
 Datasets::Datasets()
-    : train_file("../train.tsv"), dev_file("../dev.tsv"), test_file("../test.tsv")
 {
-    // Load datasets
-    load_train_file(train_file);
-    //load_dev_file(dev_file);
-    //load_test_file(test_file);
 }
 
 Datasets::Datasets(const std::string& fn)
