@@ -43,6 +43,7 @@ public:
 private:
 
     int current_batch_idx=0;
+    int current_batch_target_idx=0;
     std::string train_file;
     std::string dev_file;
     std::string test_file;

@@ -147,6 +147,7 @@ int Datasets::get_train_len()
 void Datasets::init_epoch()
 {
     current_batch_idx = 0;
+    current_batch_target_idx = 0;
     std::random_shuffle ( train_it.begin(), train_it.end() );
 }
 
@@ -173,6 +174,7 @@ torch::Tensor Datasets::get_batch(int batch_size)
         a.resize(max_len, 0);
         results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
     }
+    std::cout << "Batch ID " << current_batch_idx << std::endl;
     current_batch_idx++;
     return results;
 }
@@ -181,7 +183,7 @@ torch::Tensor Datasets::get_target(int batch_size)
 {
     // Get Max Length of the batch
     int max_len = 0;
-    for(int i=current_batch_idx*batch_size; i < (current_batch_idx+1)*batch_size; ++i)
+    for(int i=current_batch_target_idx*batch_size; i < (current_batch_target_idx+1)*batch_size; ++i)
     {
         if (train_it[i].label.size() > max_len)
         {
@@ -190,16 +192,16 @@ torch::Tensor Datasets::get_target(int batch_size)
     }
 
     // Concatenate sentence into one batch
-    auto a = train_it[current_batch_idx*batch_size].label;
+    auto a = train_it[current_batch_target_idx*batch_size].label;
     a.resize(max_len, 0);
     auto results = torch::tensor(a);
     results = at::reshape(results, {1, -1});
-    for(int i=current_batch_idx*batch_size+1; i < (current_batch_idx+1)*batch_size; ++i)
+    for(int i=current_batch_target_idx*batch_size+1; i < (current_batch_target_idx+1)*batch_size; ++i)
     {
         a = train_it[i].label;
         a.resize(max_len, 0);
         results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
     }
-    current_batch_idx++;
+    current_batch_target_idx++;
     return results;
 }
