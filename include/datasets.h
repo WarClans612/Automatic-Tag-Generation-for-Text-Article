@@ -33,6 +33,7 @@ public:
     void load_train_file(const std::string& fn);
     void load_dev_file(const std::string& fn);
     void load_test_file(const std::string& fn);
+    static std::vector<std::string> preprocess_string(const std::string& input);
     void load_file(std::vector<Example>& target, const std::string& fn);
 
     int get_train_len();

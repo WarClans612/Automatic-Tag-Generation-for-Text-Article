@@ -94,6 +94,27 @@ void Datasets::load_test_file(const std::string& fn)
     return;
 }
 
+std::vector<std::string> Datasets::preprocess_string(const std::string& input)
+{
+    std::regex e_clean("[^A-Za-z0-9(),!?\'`]");
+    std::regex e_space("\\s{2,}");
+    auto text = std::regex_replace (input, e_clean, " ");
+    text = std::regex_replace (text, e_space, " ");
+    std::transform(text.begin(), text.end(), text.begin(),
+        [](unsigned char c){ return std::tolower(c); });
+
+    // Tokenize string
+    std::vector<std::string> results;
+    std::stringstream ss;
+    ss.str(text);
+    std::string word;
+    while(ss >> word)
+    {
+        results.push_back(word);
+    }
+    return results;
+}
+
 void Datasets::load_file(std::vector<Example>& target, const std::string& fn)
 {
     std::ifstream ifs (fn, std::ifstream::in);
@@ -111,21 +132,8 @@ void Datasets::load_file(std::vector<Example>& target, const std::string& fn)
 
         // Clean string
         std::getline(ifs, text);
-        std::regex e_clean("[^A-Za-z0-9(),!?\'`]");
-        text = std::regex_replace (text, e_clean, " ");
-        std::regex e_space("\\s{2,}");
-        text = std::regex_replace (text, e_space, " ");
-        std::transform(text.begin(), text.end(), text.begin(),
-            [](unsigned char c){ return std::tolower(c); });
-
-        // Tokenize string
-        std::stringstream ss;
-        ss.str(text);
-        std::string word;
-        while(ss >> word)
-        {
-            results.text.push_back(word);
-        }
+        std::vector<std::string> temp = preprocess_string(text);
+        results.text.insert(results.text.end(), temp.begin(), temp.end());
         target.push_back(results);
     }
 
