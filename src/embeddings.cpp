@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <unordered_map>
+#include <torch/torch.h>
 #include "embeddings.h"
 
 Embeddings::Embeddings()
@@ -17,6 +18,12 @@ Embeddings::Embeddings(const std::string& fn)
 {
     // Loading the entire embeddings file
     load_embed_file(fn);
+    std::cout << "Embeddings finished loading" << std::endl;
+}
+
+torch::Tensor& Embeddings::get_embeddings()
+{
+    return embedding;
 }
 
 void Embeddings::load_embed_file(const std::string& fn)
@@ -43,8 +50,20 @@ void Embeddings::load_embed_file(const std::string& fn)
         embed[j] = vec;
         stoi_dict[key] = j;
         itos_dict[j] = key;
+
+        if (j == 0)
+        {
+            embedding = at::reshape(torch::tensor(embed[j]), {1, -1});
+        }
+        else
+        {
+            embedding = torch::cat({embedding, at::reshape(torch::tensor(embed[j]), {1, -1})});
+        }
+
         j++;
+        if (j==300)  break;
     }
+
     ifs.close();
 }
 
