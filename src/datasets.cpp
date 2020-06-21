@@ -48,6 +48,16 @@ void Datasets::load_embedding(const std::string& fn)
     return;
 }
 
+std::vector<int> Datasets::sentence2int(const std::vector<std::string> input)
+{
+    std::vector<int> results;
+    for(auto& word: input)
+    {
+        results.push_back(embed.stoi(word));
+    }
+    return results;
+}
+
 void Datasets::update_Example(std::vector<Example>& target)
 {
     for(auto& ex: target)
@@ -55,10 +65,8 @@ void Datasets::update_Example(std::vector<Example>& target)
         // Reserve size as much as text
         ex.i_text.reserve(ex.text.size());
         // Push converted string into integer
-        for(auto& word: ex.text)
-        {
-            ex.i_text.push_back(embed.stoi(word));
-        }
+        std::vector<int> temp = sentence2int(ex.text);
+        ex.i_text.insert(ex.i_text.end(), temp.begin(), temp.end());
     }
 }
 
@@ -177,7 +185,6 @@ torch::Tensor Datasets::get_batch(int batch_size)
         a.resize(max_len, 0);
         results = torch::cat({results, at::reshape(torch::tensor(a), {1, -1})});
     }
-    std::cout << "Batch ID " << current_batch_idx << std::endl;
     current_batch_idx++;
     return results;
 }

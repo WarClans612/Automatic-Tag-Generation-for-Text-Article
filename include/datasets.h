@@ -27,13 +27,14 @@ public:
 
     torch::Tensor& get_embeddings();
     void load_embedding(const std::string& fn);
+    std::vector<int> sentence2int(const std::vector<std::string> input);
     void update_Example(std::vector<Example>& target);
     void update_datasets();
 
     void load_train_file(const std::string& fn);
     void load_dev_file(const std::string& fn);
     void load_test_file(const std::string& fn);
-    static std::vector<std::string> preprocess_string(const std::string& input);
+    std::vector<std::string> preprocess_string(const std::string& input);
     void load_file(std::vector<Example>& target, const std::string& fn);
 
     int get_train_len();
