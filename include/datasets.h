@@ -11,6 +11,7 @@ class Example {
 public:
 
     std::vector<std::string> text;
+    std::vector<int> i_text;
     std::vector<double> label;
 };
 
@@ -26,6 +27,7 @@ public:
 
     void load_embedding();
     void load_embedding(const std::string& fn);
+    void update_datasets();
 
     void load_train_file(const std::string& fn);
     void load_dev_file(const std::string& fn);
