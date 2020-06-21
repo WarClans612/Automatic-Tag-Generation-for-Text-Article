@@ -14,14 +14,14 @@ public:
     ~Embeddings() = default;
 
     void load_embed_file(const std::string& fn);
-    const std::vector<double> &operator[] (const std::string& word);
+    const std::vector<float> &operator[] (const std::string& word);
     int stoi(const std::string& word);
     const std::string itos(const int& value);
 
 private:
 
     std::string embed_file;
-    std::unordered_map<int, std::vector<double>> embed;
+    std::unordered_map<int, std::vector<float>> embed;
     std::unordered_map<std::string, int> stoi_dict;
     std::unordered_map<int, std::string> itos_dict;
 };

@@ -35,7 +35,7 @@ void Embeddings::load_embed_file(const std::string& fn)
     int j = 0;
     while(ifs >> key)
     {
-        std::vector<double> vec(dim);
+        std::vector<float> vec(dim);
         for (int i=0; i < dim; i++)
         {
             ifs >> vec[i];
@@ -44,12 +44,11 @@ void Embeddings::load_embed_file(const std::string& fn)
         stoi_dict[key] = j;
         itos_dict[j] = key;
         j++;
-        if (j == 300) break;
     }
     ifs.close();
 }
 
-const std::vector<double> & Embeddings::operator[] (const std::string& word) 
+const std::vector<float> & Embeddings::operator[] (const std::string& word) 
 {
     return embed[stoi_dict[word]];
 }
@@ -57,7 +56,7 @@ const std::vector<double> & Embeddings::operator[] (const std::string& word)
 int Embeddings::stoi(const std::string& word)
 {
     std::unordered_map<std::string, int>::const_iterator exists = stoi_dict.find(word);
-    if (exists == stoi_dict.end()) return -1;
+    if (exists == stoi_dict.end()) return 0;
     return stoi_dict[word];
 }
 
