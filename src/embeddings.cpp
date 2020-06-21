@@ -57,14 +57,14 @@ const std::vector<double> & Embeddings::operator[] (const std::string& word)
 int Embeddings::stoi(const std::string& word)
 {
     std::unordered_map<std::string, int>::const_iterator exists = stoi_dict.find(word);
-    if (exists == stoi_dict.end()) return 0;
+    if (exists == stoi_dict.end()) return -1;
     return stoi_dict[word];
 }
 
 const std::string Embeddings::itos(const int& value)
 {
     std::unordered_map<int, std::string>::const_iterator exists = itos_dict.find(value);
-    if (exists == itos_dict.end()) return 0;
+    if (exists == itos_dict.end()) return "<unk>";
     return itos_dict[value];
 }
 
