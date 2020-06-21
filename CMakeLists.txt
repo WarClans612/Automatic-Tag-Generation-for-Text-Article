@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 project(Automatic-Tag-Generation-for-Text-Article)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Torch related
 find_package(Torch REQUIRED)
