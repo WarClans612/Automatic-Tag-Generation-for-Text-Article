@@ -8,10 +8,8 @@
 #include "embeddings.h"
 
 Embeddings::Embeddings()
-    : embed_file("../word2vec/GoogleNews-vectors-negative300.txt")
 {
-    // Loading the entire embeddings file
-    load_embed_file(embed_file);
+    
 }
 
 Embeddings::Embeddings(const std::string& fn)
