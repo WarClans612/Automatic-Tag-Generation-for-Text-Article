@@ -19,6 +19,7 @@ Tagger::Tagger(int output_channel, int epoch, int batch_size, float learning_rat
     std::string train_file, std::string dev_file, std::string test_file,
     std::string embed_file)
 {
+    this->output_channel = output_channel;
     this->epoch = epoch;
     this->batch_size = batch_size;
     this->learning_rate = learning_rate;
@@ -30,7 +31,7 @@ Tagger::Tagger(int output_channel, int epoch, int batch_size, float learning_rat
     this->data_it = Datasets(this->train_file, this->dev_file, this->test_file);
     this->data_it.load_embedding(this->embed_file);
     this->data_it.update_datasets(); 
-    this->net = std::make_shared<XMLCNN>(output_channel, this->data_it.get_embeddings());
+    this->net = std::make_shared<XMLCNN>(this->output_channel, this->data_it.get_embeddings());
 }
 
 void Tagger::train()
@@ -67,13 +68,18 @@ void Tagger::train()
     torch::save(net, "net.pt");
 }
 
-torch::Tensor Tagger::test(std::string sentence)
+std::vector<float> Tagger::test(std::string sentence)
 {
     auto tokenized = this->data_it.preprocess_string(sentence);
     auto tokenized_int = this->data_it.sentence2int(tokenized);
     auto tensorized = this->data_it.vec2tensor(tokenized_int);
 
     torch::Tensor prediction = net->forward(tensorized);
-    return prediction;
+    std::vector<float> results;
+    for(int i=0; i<this->output_channel; ++i)
+    {
+        results.push_back(prediction.data<float>()[i]);
+    }
+    return results;
 }
 

@@ -16,12 +16,13 @@ public:
     ~Tagger() = default;
 
     void train();
-    torch::Tensor test(std::string sentence);
+    std::vector<float> test(std::string sentence);
 
 private:
 
     std::shared_ptr<XMLCNN> net;
     Datasets data_it;
+    int output_channel;
     int epoch;
     int batch_size;
     float learning_rate;

@@ -5,6 +5,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/numpy.h>
 
+#include <string>
 #include "model.h"
 #include "embeddings.h"
 #include "datasets.h"
