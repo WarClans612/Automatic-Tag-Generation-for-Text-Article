@@ -162,6 +162,14 @@ void Datasets::init_epoch()
     std::random_shuffle ( train_it.begin(), train_it.end() );
 }
 
+torch::Tensor Datasets::vec2tensor(const std::vector<int>& input)
+{
+    auto a = input;
+    auto results = torch::tensor(a);
+    results = at::reshape(results, {1, -1});
+    return results;
+}
+
 torch::Tensor Datasets::get_batch(int batch_size)
 {
     // Get Max Length of the batch

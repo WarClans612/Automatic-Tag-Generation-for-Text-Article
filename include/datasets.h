@@ -39,6 +39,7 @@ public:
 
     int get_train_len();
     void init_epoch();
+    torch::Tensor vec2tensor(const std::vector<int>& input);
     torch::Tensor get_batch(int batch_size);
     torch::Tensor get_target(int batch_size);
 
