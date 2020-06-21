@@ -37,7 +37,7 @@ struct XMLCNN : torch::nn::Module {
         x3 = at::squeeze(pool(x3), 2);
 
         // Concatenate results
-        x = at::_cat({x1, x2, x3}, 1);
+        x = torch::cat({x1, x2, x3}, 1);
         x = torch::relu(bottleneck(at::reshape(x, {-1, 3*100*8}))); // ks*output_channel*dynamic_pool_length, num_bottleneck_hidden
         x = dropout(x);
         x = fc1(x);
